@@ -32,10 +32,9 @@ import com.mysql.cj.xdevapi.Statement;
 
 public class favoriteMain implements ActionListener {
 	final JButton searchButton = new JButton("Search");
-	
-		
+
 	favoriteMain() throws SQLException {
-		
+
 		String url = "jdbc:mysql://localhost:3306/favorite"; // 3306/"DataBase Name";
 		String username = "root";
 		String password = "ghjdfgh456";
@@ -44,29 +43,33 @@ public class favoriteMain implements ActionListener {
 		///////////////////////////////////////////////////////////////////////
 		///////////////////////////////////////////////////////////////////////
 		///////////////////////////////////////////////////////////////////////
-		String queryCountCategory = "SELECT max(id) as maxer FROM favorite.category;"; 
-		
-		java.sql.Statement statement = connection.createStatement(); // is an object that will allow user to send queries to java, a bridge.
+		String queryCountCategory = "SELECT max(id) as maxer FROM favorite.category;";
+
+		java.sql.Statement statement = connection.createStatement(); // is an object that will allow user to send
+																		// queries to java, a bridge.
 		ResultSet rsMaxIdCategory = statement.executeQuery(queryCountCategory);
 		rsMaxIdCategory.next();
-		int numberCategories = rsMaxIdCategory.getInt("maxer"); //retrieve the line of My SQL
+		int numberCategories = rsMaxIdCategory.getInt("maxer"); // retrieve the line of My SQL
 		System.out.println(numberCategories);
-		
-		
+
 		/////////////////////////////////////////////////////
-		String [] listCategory = new String [numberCategories+40];	
-		String queryCategoriesList = "SELECT categories FROM favorite.category";
-		ResultSet rsReturnCategories = statement.executeQuery(queryCategoriesList);
-		rsReturnCategories.next();		
-		
-	
-		for (int j=1; j<numberCategories;j++){
-			listCategory[j] = rsReturnCategories.getString(j);
-			System.out.println("loop");
+		int arrayExtraLimit = 100; // This value is the extra values that the array can take onve the program starts. simply user can add 100 extra categories oce the system starts
+		String[] listCategory = new String[numberCategories + arrayExtraLimit];
+
+		// In this are the array for "Category" LoV fills with value //Start
+		for (int j = 1; j <= numberCategories; j++) {
+			String queryCategoriesList = "SELECT categories FROM favorite.category Where id = '" + j + "'";
+			ResultSet rsReturnCategories = statement.executeQuery(queryCategoriesList);
+			// System.out.println("loop"+j);
+			rsReturnCategories.next();
+			listCategory[j - 1] = rsReturnCategories.getString("categories");
+			// System.out.println("loop");
 		}
-		
-		
-		
+		// In this are the array for "Category" LoV fills with value //End
+		for (int t=6; t<(numberCategories+arrayExtraLimit);  t++) {
+			listCategory[t]="trash"+t;
+		}
+
 		final JFrame frmFavorites = new JFrame();
 		frmFavorites.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmFavorites.setTitle("My Favorites");
@@ -92,14 +95,12 @@ public class favoriteMain implements ActionListener {
 
 		final JLabel categoryF = new JLabel("Category:");
 		// categoryF.setBorder(border);
-
 		final JLabel creationD = new JLabel("Creation Date:");
 		final JLabel modificationD = new JLabel("Modification Date:");
 		final JLabel rankLoV = new JLabel("My Rank:");
 		final JLabel comment1 = new JLabel("Rec Comment 1:");
 		final JLabel comment2 = new JLabel("Rec Comment 2:");
 		final JLabel dateOfRelease = new JLabel("Release Date:");// Calendar
-
 
 		final JButton addButton = new JButton("Add Record");
 		final JButton editButton = new JButton("Edit Record");
@@ -129,7 +130,7 @@ public class favoriteMain implements ActionListener {
 		searchButton.setFont(new Font("Calibri", Font.BOLD, 20));
 		searchButton.setBounds(1050, 210, 150, 25);
 		searchButton.addActionListener((ActionListener) this);
-		//Important(Always need an Action in order to use the Button)
+		// Important(Always need an Action in order to use the Button)
 
 		addButton.setFont(new Font("Calibri", Font.BOLD, 20));
 		addButton.setBounds(1050, 240, 150, 25);
@@ -140,8 +141,15 @@ public class favoriteMain implements ActionListener {
 		addNewCateg.setFont(new Font("Calibri", Font.BOLD, 20));
 		addNewCateg.setBounds(1025, 340, 180, 28);
 		/////////////////////////////////////
-		JComboBox categoryList = new JComboBox();
-		JComboBox RankList = new JComboBox();
+		JComboBox categoryList = new JComboBox(listCategory);
+		String list1_10[] = {"1","2","3","4","5","6","7","8","9","10"};
+		JComboBox RankList = new JComboBox(list1_10);
+		String valueHelp;
+		for (int t=6; t<(numberCategories+arrayExtraLimit);  t++) {
+			valueHelp = "trash"+t;
+			categoryList.removeItem(valueHelp);
+		}
+		
 
 		DateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
 		JFormattedTextField dateTextFieldCreation = new JFormattedTextField(dateformat);
@@ -181,7 +189,7 @@ public class favoriteMain implements ActionListener {
 		dateTextFieldModified.setFont(new Font("Calibri", Font.BOLD, 20));
 		dateTextFieldModified.setBounds(255, 270, 200, 25);
 
-		categoryList.setFont(new Font("Calibri", Font.BOLD, 20));
+		categoryList.setFont(new Font("Calibri", Font.BOLD, 18));
 		categoryList.setBounds(255, 210, 200, 25);
 
 		RankList.setFont(new Font("Calibri", Font.BOLD, 20));
@@ -225,7 +233,7 @@ public class favoriteMain implements ActionListener {
 		// TODO Auto-generated method stub
 		if (e.getSource() == searchButton) {
 			System.out.println("Test");
-			
+
 		}
 
 	}
