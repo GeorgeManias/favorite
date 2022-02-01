@@ -53,7 +53,8 @@ public class favoriteMain implements ActionListener {
 		System.out.println(numberCategories);
 
 		/////////////////////////////////////////////////////
-		int arrayExtraLimit = 100; // This value is the extra values that the array can take onve the program starts. simply user can add 100 extra categories oce the system starts
+		int arrayExtraLimit = 100; // This value is the extra values that the array can take onve the program
+									// starts. simply user can add 100 extra categories oce the system starts
 		String[] listCategory = new String[numberCategories + arrayExtraLimit];
 
 		// In this are the array for "Category" LoV fills with value //Start
@@ -66,9 +67,57 @@ public class favoriteMain implements ActionListener {
 			// System.out.println("loop");
 		}
 		// In this are the array for "Category" LoV fills with value //End
-		for (int t=6; t<(numberCategories+arrayExtraLimit);  t++) {
-			listCategory[t]="trash"+t;
+		for (int t = 6; t < (numberCategories + arrayExtraLimit); t++) {
+			listCategory[t] = "trash" + t;
 		}
+       ///////////////////////////////////////////////////////////////
+		// Load Table Values from SQL///Start
+		String queryCountlistTableRows = "SELECT max(idRecords) as maxert FROM records;";
+		ResultSet rsMaxIdTable = statement.executeQuery(queryCountlistTableRows);
+		rsMaxIdTable.next();
+		int listTableRows = rsMaxIdTable.getInt("maxert");
+		//System.out.print(listTableRows);
+		Object[][] listTable = new String[listTableRows+20000][7];
+		for (int l = 1; l <= listTableRows; l++) {
+			for (int m = 1; m <= 7; m++) {
+				String columnSQLTable = "";
+				if (m==1) {
+					columnSQLTable= "category";
+				}
+				else if(m==2) {
+					columnSQLTable= "comment1";
+				}
+				else if(m==3) {
+					columnSQLTable= "comment2";
+				}
+				else if(m==4) {
+					columnSQLTable= "ranker";
+				}
+				else if(m==5) {
+					columnSQLTable= "releaseDate";
+				}
+				else if(m==6) {
+					columnSQLTable= "modificationDate";
+				}
+				else if(m==7) {
+					columnSQLTable= "creationDate";
+				}
+				String queryTableItems = "SELECT '" + columnSQLTable + "' as maxek  FROM favorite.records WHERE idRecords = '" + l + "'";
+				ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+				rsValueTable.next();
+				String tableItemStr = rsValueTable.getString("maxek");				
+				listTable[l-1][m-1]= tableItemStr;
+				System.out.println("loop");
+						
+			}
+			
+		}
+		
+		
+		
+		
+		
+		
 
 		final JFrame frmFavorites = new JFrame();
 		frmFavorites.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,14 +191,13 @@ public class favoriteMain implements ActionListener {
 		addNewCateg.setBounds(1025, 340, 180, 28);
 		/////////////////////////////////////
 		JComboBox categoryList = new JComboBox(listCategory);
-		String list1_10[] = {"1","2","3","4","5","6","7","8","9","10"};
+		String list1_10[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 		JComboBox RankList = new JComboBox(list1_10);
 		String valueHelp;
-		for (int t=6; t<(numberCategories+arrayExtraLimit);  t++) {
-			valueHelp = "trash"+t;
+		for (int t = 6; t < (numberCategories + arrayExtraLimit); t++) {
+			valueHelp = "trash" + t;
 			categoryList.removeItem(valueHelp);
 		}
-		
 
 		DateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
 		JFormattedTextField dateTextFieldCreation = new JFormattedTextField(dateformat);
@@ -169,7 +217,7 @@ public class favoriteMain implements ActionListener {
 				"Rec Comment 2", "Release Date" };
 		Object[][] data = { { "backIcon", "BACllllllllllllllllllllK" }, { "exitIcon", "EXIT" },
 				{ "forwardIcon", "FORWARD" }, };
-		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(listTable, columnNames);
 
 		/////////////////////////////////////
 		JTable table = new JTable(model);
