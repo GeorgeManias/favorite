@@ -32,6 +32,20 @@ import com.mysql.cj.xdevapi.Statement;
 
 public class favoriteMain implements ActionListener {
 	final JButton searchButton = new JButton("Search");
+	JTable table;
+	DefaultTableModel model;
+	String[] listCategory;
+	int listTableRows;
+	Object[][] listTable;
+	
+	JFormattedTextField dateTextFieldCreation;
+	JFormattedTextField dateTextFieldModified;
+	JFormattedTextField dateTextFieldTRelease;
+	
+	JTextField comment1Input;
+	JTextField comment2Input;
+	JComboBox RankList;
+	JComboBox categoryList;
 
 	favoriteMain() throws SQLException {
 
@@ -55,7 +69,7 @@ public class favoriteMain implements ActionListener {
 		/////////////////////////////////////////////////////
 		int arrayExtraLimit = 100; // This value is the extra values that the array can take onve the program
 									// starts. simply user can add 100 extra categories oce the system starts
-		String[] listCategory = new String[numberCategories + arrayExtraLimit];
+		listCategory = new String[numberCategories + arrayExtraLimit];
 
 		// In this are the array for "Category" LoV fills with value //Start
 		for (int j = 1; j <= numberCategories; j++) {
@@ -70,54 +84,87 @@ public class favoriteMain implements ActionListener {
 		for (int t = 6; t < (numberCategories + arrayExtraLimit); t++) {
 			listCategory[t] = "trash" + t;
 		}
-       ///////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////
 		// Load Table Values from SQL///Start
 		String queryCountlistTableRows = "SELECT max(idRecords) as maxert FROM records;";
 		ResultSet rsMaxIdTable = statement.executeQuery(queryCountlistTableRows);
 		rsMaxIdTable.next();
-		int listTableRows = rsMaxIdTable.getInt("maxert");
-		//System.out.print(listTableRows);
-		Object[][] listTable = new String[listTableRows+20000][7];
+		listTableRows = rsMaxIdTable.getInt("maxert");
+		// System.out.print(listTableRows);
+		listTable = new String[listTableRows + 20000][7];
 		for (int l = 1; l <= listTableRows; l++) {
 			for (int m = 1; m <= 7; m++) {
 				String columnSQLTable = "";
-				if (m==1) {
-					columnSQLTable= "category";
+				if (m == 1) {
+					// columnSQLTable= "category";
+					String queryTableItems = "SELECT category as maxek  FROM favorite.records WHERE idRecords = '" + l
+							+ "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr + "TestTester");
+					listTable[l - 1][m - 1] = tableItemStr;
+
+				} else if (m == 2) {
+					// columnSQLTable= "comment1";
+					String queryTableItems = "SELECT comment1 as maxek  FROM favorite.records WHERE idRecords = '" + l
+							+ "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr);
+					listTable[l - 1][m - 1] = tableItemStr;
+				} else if (m == 3) {
+					// columnSQLTable= "comment2";
+					String queryTableItems = "SELECT comment2 as maxek  FROM favorite.records WHERE idRecords = '" + l
+							+ "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr);
+					listTable[l - 1][m - 1] = tableItemStr;
+				} else if (m == 4) {
+					// columnSQLTable= "ranker";
+					String queryTableItems = "SELECT ranker as maxek  FROM favorite.records WHERE idRecords = '" + l
+							+ "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr);
+					listTable[l - 1][m - 1] = tableItemStr;
+				} else if (m == 5) {
+					// columnSQLTable= "releaseDate";
+					String queryTableItems = "SELECT releaseDate as maxek  FROM favorite.records WHERE idRecords = '"
+							+ l + "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr);
+					listTable[l - 1][m - 1] = tableItemStr;
+				} else if (m == 6) {
+					// columnSQLTable= "modificationDate";
+					String queryTableItems = "SELECT modificationDate as maxek  FROM favorite.records WHERE idRecords = '"
+							+ l + "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr);
+					listTable[l - 1][m - 1] = tableItemStr;
+
+				} else if (m == 7) {
+					// columnSQLTable= "creationDate";
+					String queryTableItems = "SELECT creationDate as maxek  FROM favorite.records WHERE idRecords = '"
+							+ l + "'";
+					ResultSet rsValueTable = statement.executeQuery(queryTableItems);
+					rsValueTable.next();
+					String tableItemStr = rsValueTable.getString("maxek");
+					System.out.println(tableItemStr);
+					listTable[l - 1][m - 1] = tableItemStr;
 				}
-				else if(m==2) {
-					columnSQLTable= "comment1";
-				}
-				else if(m==3) {
-					columnSQLTable= "comment2";
-				}
-				else if(m==4) {
-					columnSQLTable= "ranker";
-				}
-				else if(m==5) {
-					columnSQLTable= "releaseDate";
-				}
-				else if(m==6) {
-					columnSQLTable= "modificationDate";
-				}
-				else if(m==7) {
-					columnSQLTable= "creationDate";
-				}
-				String queryTableItems = "SELECT '" + columnSQLTable + "' as maxek  FROM favorite.records WHERE idRecords = '" + l + "'";
-				ResultSet rsValueTable = statement.executeQuery(queryTableItems);
-				rsValueTable.next();
-				String tableItemStr = rsValueTable.getString("maxek");				
-				listTable[l-1][m-1]= tableItemStr;
-				System.out.println("loop");
-						
+
 			}
-			
+
 		}
-		
-		
-		
-		
-		
-		
 
 		final JFrame frmFavorites = new JFrame();
 		frmFavorites.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -190,37 +237,35 @@ public class favoriteMain implements ActionListener {
 		addNewCateg.setFont(new Font("Calibri", Font.BOLD, 20));
 		addNewCateg.setBounds(1025, 340, 180, 28);
 		/////////////////////////////////////
-		JComboBox categoryList = new JComboBox(listCategory);
+		categoryList = new JComboBox(listCategory);
 		String list1_10[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-		JComboBox RankList = new JComboBox(list1_10);
+		RankList = new JComboBox(list1_10);
 		String valueHelp;
 		for (int t = 6; t < (numberCategories + arrayExtraLimit); t++) {
 			valueHelp = "trash" + t;
 			categoryList.removeItem(valueHelp);
 		}
 
-		DateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
-		JFormattedTextField dateTextFieldCreation = new JFormattedTextField(dateformat);
-		JFormattedTextField dateTextFieldModified = new JFormattedTextField(dateformat);
-		JFormattedTextField dateTextFieldTRelease = new JFormattedTextField(dateformat);
+		DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+		dateTextFieldCreation = new JFormattedTextField(dateformat);
+		dateTextFieldModified = new JFormattedTextField(dateformat);
+		dateTextFieldTRelease = new JFormattedTextField(dateformat);
 		/*
 		 * NumberFormatter numericFormat = new NumberFormatter();
 		 * numericFormat.setValueClass(Long.class);
 		 * numericFormat.setAllowsInvalid(true); JFormattedTextField comment1Input = new
 		 * JFormattedTextField(numericFormat);
 		 */
-		JTextField comment1Input = new JTextField();
-		JTextField characterCommentInput = new JTextField();
+		comment1Input = new JTextField();
+		comment2Input = new JTextField();
 
 		/////////////////////////////////////
 		String[] columnNames = { "Category", "Creation Date", "Modification Date", "My Rank", "Rec Comment 1",
 				"Rec Comment 2", "Release Date" };
-		Object[][] data = { { "backIcon", "BACllllllllllllllllllllK" }, { "exitIcon", "EXIT" },
-				{ "forwardIcon", "FORWARD" }, };
-		DefaultTableModel model = new DefaultTableModel(listTable, columnNames);
+		model = new DefaultTableModel(listTable, columnNames);
 
 		/////////////////////////////////////
-		JTable table = new JTable(model);
+		table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(80, 400, 1130, 320);
 		frmFavorites.getContentPane().add(scrollPane);
@@ -246,8 +291,8 @@ public class favoriteMain implements ActionListener {
 		comment1Input.setFont(new Font("Calibri", Font.BOLD, 20));
 		comment1Input.setBounds(780, 210, 200, 25);
 
-		characterCommentInput.setFont(new Font("Calibri", Font.BOLD, 20));
-		characterCommentInput.setBounds(780, 240, 200, 25);
+		comment2Input.setFont(new Font("Calibri", Font.BOLD, 20));
+		comment2Input.setBounds(780, 240, 200, 25);
 
 		dateTextFieldTRelease.setFont(new Font("Calibri", Font.BOLD, 20));
 		dateTextFieldTRelease.setBounds(780, 270, 200, 25);
@@ -268,7 +313,7 @@ public class favoriteMain implements ActionListener {
 		frmFavorites.getContentPane().add(dateTextFieldCreation);
 		frmFavorites.getContentPane().add(dateTextFieldModified);
 		frmFavorites.getContentPane().add(comment1Input);
-		frmFavorites.getContentPane().add(characterCommentInput);
+		frmFavorites.getContentPane().add(comment2Input);
 		frmFavorites.getContentPane().add(dateTextFieldTRelease);
 		frmFavorites.getContentPane().add(addNewCateg);
 
@@ -278,16 +323,29 @@ public class favoriteMain implements ActionListener {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void actionPerformed(java.awt.event.ActionEvent e) {
-		// TODO Auto-generated method stub
+		
+		String categorySearchValue = categoryList.getSelectedItem().toString();		
+		String dateCreationValue = dateTextFieldCreation.getText();
+		String dateModifiedValue = dateTextFieldModified.getText();
+		String ranklValue = RankList.getSelectedItem().toString();	
+		String comment1Value = comment1Input.getText();
+		String comment2Value = comment2Input.getText();
+		String dateReleaseValue = dateTextFieldTRelease.getText();
+		
 		if (e.getSource() == searchButton) {
-			System.out.println("Test");
-
+		
+			Object[][] searchArray = new String[listTableRows][7];
+			for (int i=1; i<=listTableRows ; i++) {
+				for (int m = 1; m <= 7; m++) {
+					searchArray[i-1][m-1]= listTable[i-1][m-1];
+				}				
+			}
+			
 		}
-
+		
 	}
 
 	public static void main(String[] args) throws SQLException {
 		favoriteMain frameFav = new favoriteMain();
-
 	}
 }
